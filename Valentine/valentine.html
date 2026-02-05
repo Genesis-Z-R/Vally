@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For My Valentine</title>
+    <style>
+        :root {
+            --primary-pink: #ff4d8d;
+            --soft-pink: #ffe4e1;
+            --bg-gradient: linear-gradient(180deg, #fff0f3 0%, #ffc1d6 100%);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            color: #4a4a4a;
+        }
+
+        /* Floating Background Layer */
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-element {
+            position: absolute;
+            bottom: -100px;
+            pointer-events: none;
+            z-index: 0;
+            animation: float linear forwards;
+        }
+
+        @keyframes float {
+            0% { 
+                transform: translateY(0) translateX(0) rotate(0deg); 
+                opacity: 0; 
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(-120vh) translateX(30px) rotate(360deg); 
+                opacity: 0; 
+            }
+        }
+
+        /* Main UI Container */
+        .container {
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 2.5rem 1.5rem;
+            border-radius: 35px;
+            box-shadow: 0 20px 40px rgba(255, 77, 141, 0.2);
+            width: 85%;
+            max-width: 350px;
+            text-align: center;
+            border: 2px solid white;
+        }
+
+        h1 {
+            color: var(--primary-pink);
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+            font-weight: 700;
+        }
+
+        .hidden { display: none !important; }
+
+        .main-pic {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        button {
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(255, 77, 141, 0.4);
+            width: 100%;
+            margin-bottom: 12px;
+            outline: none;
+        }
+
+        button:active { transform: scale(0.95); }
+
+        #no-btn {
+            background: white;
+            color: #999;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            font-size: 0.9rem;
+            width: auto;
+            padding: 10px 20px;
+        }
+
+        .arrow {
+            font-size: 2.5rem;
+            color: var(--primary-pink);
+            display: block;
+            margin-bottom: 10px;
+            animation: bounce 0.6s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hearts-container" id="hearts"></div>
+
+<div class="container">
+    <div id="state1">
+        <h1>Hey beautiful</h1>
+        <button onclick="nextState(1)">Next ❤️</button>
+    </div>
+
+    <div id="state2" class="hidden">
+        <h1>We've gone through a lot together</h1>
+        <button onclick="nextState(2)">Next ❤️</button>
+    </div>
+
+    <div id="state3" class="hidden">
+        <h1>You make me very happy</h1>
+        <button onclick="nextState(3)">Next ❤️</button>
+    </div>
+
+    <div id="state4" class="hidden">
+        <img src="us.jpg" alt="Us" class="main-pic">
+        <button onclick="nextState(4)">Next ❤️</button>
+    </div>
+
+    <div id="state5" class="hidden">
+        <div id="arrows" class="hidden">
+            <span class="arrow">👇</span>
+        </div>
+        <h1>Will you be my Valentine?</h1>
+        <button id="yes-btn" onclick="nextState(5)">YES</button>
+        <br>
+        <button id="no-btn" onclick="growYes()">No</button>
+    </div>
+
+    <div id="state6" class="hidden">
+        <h1>You've made me the happiest person in the world, I love you so much ❤️</h1>
+    </div>
+</div>
+
+<script>
+    let yesScale = 1;
+    const photoFiles = ['pic1.jpg', 'pic2.jpg', 'pic3.jpg', 'pic4.jpg', 'pic5.jpg', 'pic6.jpg', 'pic7.jpg'];
+    const heartIcons = ['❤️', '💖', '✨', '🌸'];
+
+    function createFloatingElements() {
+        const container = document.getElementById('hearts');
+        
+        setInterval(() => {
+            const element = document.createElement('div');
+            element.classList.add('floating-element');
+            
+            // 40% chance for a photo, 60% for an emoji
+            if (Math.random() > 0.6) {
+                const img = document.createElement('img');
+                img.src = photoFiles[Math.floor(Math.random() * photoFiles.length)];
+                img.style.width = '65px';
+                img.style.height = '65px';
+                img.style.borderRadius = '50%';
+                img.style.border = '3px solid white';
+                img.style.objectFit = 'cover';
+                img.style.boxShadow = '0 5px 15px rgba(255,77,141,0.3)';
+                element.appendChild(img);
+            } else {
+                element.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+                element.style.fontSize = (Math.random() * 10 + 20) + 'px';
+            }
+
+            // Spread across full width (0 to 100% of viewport width)
+            element.style.left = Math.random() * 90 + 'vw';
+            
+            const duration = (Math.random() * 3 + 5);
+            element.style.animationDuration = duration + 's';
+            
+            container.appendChild(element);
+            
+            setTimeout(() => { element.remove(); }, duration * 1000);
+        }, 600); 
+    }
+
+    function nextState(current) {
+        document.getElementById(`state${current}`).classList.add('hidden');
+        document.getElementById(`state${current + 1}`).classList.remove('hidden');
+    }
+
+    function growYes() {
+        yesScale += 0.5;
+        const yesBtn = document.getElementById('yes-btn');
+        const arrows = document.getElementById('arrows');
+        
+        yesBtn.style.transform = `scale(${yesScale})`;
+        arrows.classList.remove('hidden');
+        
+        // Push "No" button down to make space
+        document.getElementById('no-btn').style.marginTop = (yesScale * 25) + 'px';
+    }
+
+    // Initialize floating background
+    createFloatingElements();
+</script>
+
+</body>
+</html>
